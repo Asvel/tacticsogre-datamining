@@ -1,4 +1,4 @@
-# Tactics Ogre PSP Datamining
+# Tactics Ogre Reborn Datamining
 
 Datamining related things for Tactics Ogre: Reborn.
 
