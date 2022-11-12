@@ -1,0 +1,23 @@
+
+# common
+
+0x00	string/b	pakd	Tactics Ogre data pack
+!:mime application/x-tacticsogre-pakd
+
+0x00	string/b	xlce	Tactics Ogre compiled spreadsheet
+!:mime application/x-tacticsogre-xlce
+
+0x00	string/b	txte	Tactics Ogre compiled text
+!:mime application/x-tacticsogre-txte
+
+
+# screenplay
+
+0x00	string/b	PGRS	Tactics Ogre screenplay progress
+!:mime application/x-tacticsogre-pgrs
+
+0x00	string/b	INVK	Tactics Ogre screenplay invocation
+!:mime application/x-tacticsogre-invk
+
+0x00	string/b	TASK	Tactics Ogre screenplay task
+!:mime application/x-tacticsogre-task

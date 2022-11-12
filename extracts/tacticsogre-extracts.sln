@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deobfuscate", "Deobfuscate\Deobfuscate.csproj", "{82CD77F1-EC7A-4BA8-8328-B30AFBD0E81C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deobfuscate", "Deobfuscate\Deobfuscate.csproj", "{82CD77F1-EC7A-4BA8-8328-B30AFBD0E81C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnpackPakd", "UnpackPakd\UnpackPakd.csproj", "{EFE464A1-BD84-4249-AFF9-CC9A064E8D48}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{82CD77F1-EC7A-4BA8-8328-B30AFBD0E81C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82CD77F1-EC7A-4BA8-8328-B30AFBD0E81C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82CD77F1-EC7A-4BA8-8328-B30AFBD0E81C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFE464A1-BD84-4249-AFF9-CC9A064E8D48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFE464A1-BD84-4249-AFF9-CC9A064E8D48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFE464A1-BD84-4249-AFF9-CC9A064E8D48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFE464A1-BD84-4249-AFF9-CC9A064E8D48}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
