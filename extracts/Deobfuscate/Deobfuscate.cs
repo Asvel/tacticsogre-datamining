@@ -71,7 +71,10 @@ foreach (var arg in args)
         if (zip.Entries.Count == 1)
         {
             var entry = zip.Entries[0];
-            outputPath = Path.ChangeExtension(inputPath, entry.Name);
+            
+            outputPath = entry.Name.StartsWith(Path.GetFileNameWithoutExtension(inputPath))
+                ? Path.Combine(Path.GetDirectoryName(inputPath)!, entry.Name)
+                : Path.ChangeExtension(inputPath, entry.Name);
             entry.ExtractToFile(outputPath, true);
         }
     }
