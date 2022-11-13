@@ -2,7 +2,7 @@
 #pragma endian little
 
 #include <std/mem.pat>
-#include <tacticsogre-psp/screenplay-instruction.pat>
+#include <tacticsogre/screenplay-instruction.pat>
 
 struct InvkEntry {
 	u16 invkId;

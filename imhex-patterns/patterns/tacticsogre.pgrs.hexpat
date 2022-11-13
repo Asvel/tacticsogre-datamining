@@ -64,6 +64,8 @@ struct PgrsEntry {
 	/* 0x27 */ u8 bgmForBattle;
 	/* 0x28 */ u8 bgmControlOpening;
 	/* 0x29 */ u8 bgmControlEnding;
+	/* 0x2a */ u8 _unknown1;
+	/* 0x2b */ u8 _unknown2;
 };
 
 struct Pgrs {

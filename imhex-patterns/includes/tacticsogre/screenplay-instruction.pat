@@ -38,7 +38,11 @@ enum IT : s16 {
 	/* 0x22 */ IncreaseShopLevelTo,  // set GF_shop_level increase only
 	/* 0x23 */ DisplayTargetMarkerOnBattleUnit,  // “Target” marker
 	/* 0x24 */ ConsumeItemDuringBattle,
-	/* 0x25 - 0x2f not used */
+	/* 0x25 */ _Unknown25,
+	/* 0x26 */ _Unknown26,
+	/* 0x27 */ _Unknown27,
+	/* 0x28 */ _Unknown28,
+	/* 0x29 - 0x2f not used */
 
 	/* 0x30 */ CompareGlobalFlag = 0x30,
 	/* 0x31 */ CompareLocalFlag,
@@ -76,7 +80,10 @@ enum IT : s16 {
 	/* 0x51 */ CompareOverallIncapacitatedUnitsAmount,
 	/* 0x52 */ CompareIfOverallChariotAndRetreatingNotUsed,
 	/* 0x53 */ CompareIfUnitExistsInBarrack,  //  check if a character “playable” real time
-	/* 0x54 - 0x5f not used */
+	/* 0x54 */ _Unknown54,
+	/* 0x55 */ _Unknown55,
+	/* 0x56 */ _Unknown56,
+	/* 0x57 - 0x5f not used */
 
 	/* 0x60 */ CompositeConditionAllTrue = 0x60,  // $1 and.. $n
 	/* 0x61 */ CompositeCondition61,  // $0 and ($1 or $2) and $3
@@ -94,13 +101,15 @@ enum IT : s16 {
 	/* 0x6d */ CompositeCondition6D,  // $0 and.. $2 and ($3 or.. $6)
 	/* 0x6e */ CompositeCondition6E,  // $0 and.. $4 and ($5 or $6)
 	/* 0x6f */ CompositeCondition6F,  // $0 and.. $5 and ($6 or $7) and $8
+	/* 0x70 */ CompositeCondition70,  // TODO
+	/* 0x71 */ CompositeCondition71,  // TODO
 
 	_ = -1,
 };
 
 fn getInstructionParameterSize(s16 type) {
     if (type == -1) return 0;
-	return std::string::at("ADDCBEBBBBBBBBBDCDCBCECBCBBDBDADCBBCCAAAAAAAAAAAEECDCEEEEEEFEEDCCCEEEECDDEEDDCDCDDCDAAAAAAAAAAAABBBBBBBBBBBBBBBB", type) - 'A';
+	return std::string::at("ADDCBEBBBBBBBBBDCDCBCECBCBBDBDADCBBCCBBDDAAAAAAAEECDCEEEEEEFEEDCCCEEEECDDEEDDCDCDDCDCECAAAAAAAAABBBBBBBBBBBBBBBBBB", type) - 'A';
 };
 
 struct Instruction {

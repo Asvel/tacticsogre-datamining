@@ -2,7 +2,7 @@
 #pragma endian little
 
 #include <std/mem.pat>
-#include <tacticsogre-psp/screenplay-instruction.pat>
+#include <tacticsogre/screenplay-instruction.pat>
 
 struct TaskEntry {
 	Instruction instructions[while(std::mem::read_signed($, 2) != -1)] [[inline]];
