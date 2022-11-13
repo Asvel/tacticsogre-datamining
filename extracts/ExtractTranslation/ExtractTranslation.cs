@@ -10,6 +10,7 @@ var dataPsp = @"..\..\..\..\tacticsogre-psp-datamining\extracts\data\";
 var deserializer = new YamlDotNet.Serialization.Deserializer();
 var texts = deserializer.Deserialize<dynamic>(File.ReadAllText(@"..\texts.yaml"));
 static List<string> castTexts(dynamic textsLeaf) => ((List<object>)textsLeaf).Cast<string>().ToList();
+string[] clans = { "威斯塔", "嘉尔加斯坦", "巴格拉姆", "杰诺比亚", "洛迪斯", "波鲁玛卡", "巴尔鲍达" };
 
 
 // translations.yaml
@@ -108,7 +109,13 @@ var translations = new Dictionary<string, List<List<string>>>();
     }
     translations["strongpoint"] = dict.Values.ToList();
 }
-translations["clan"] = translationsPsp["clan"];
+{
+    translations["clan"] = translationsPsp["clan"];
+    for (var i = 0; i < clans.Length; i++)
+    {
+        translations["clan"][i][2] = clans[i];
+    }
+}
 File.WriteAllText($@"..\translations.yaml", Util.YamlSerializer.Serialize(translations));
 
 
@@ -138,16 +145,13 @@ var offichn = new Dictionary<char, Dictionary<string, string>>();
         dict.Add(kvp.Key.TrimStart('0'), kvp.Value["NAME"][2]);
     }
 }
-offichn['l'] = new()
 {
-    { "1", "威斯塔" },
-    { "2", "嘉尔加斯坦" },
-    { "3", "巴格拉姆" },
-    { "4", "杰诺比亚" },
-    { "5", "洛迪斯" },
-    { "6", "波鲁玛卡" },
-    { "7", "巴尔鲍达" },
-};
+    var dict = offichn['l'] = new();
+    for (var i = 0; i < clans.Length; i++)
+    {
+        dict.Add((i + 1).ToString(), clans[i]);
+    }
+}
 {
     var node = texts["STRONGHOLD_LC_STRONGHOLD"];
     var dict = offichn['p'] = new();
