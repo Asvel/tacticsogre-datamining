@@ -67,4 +67,6 @@ texts = texts
     })
     .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-File.WriteAllText(@"..\texts.yaml", Util.YamlSerializer.Serialize(texts));
+File.WriteAllText(@"..\texts.yaml", Util.YamlSerializer.Serialize(texts)
+    .Replace("-{8401FF0101} LUCK", "'-{8401FF0101} LUCK'")  // these break parsing (might YamlDotNet bug)
+    .Replace("-{8401FF0101} LOYALTY", "'-{8401FF0101} LOYALTY'"));
