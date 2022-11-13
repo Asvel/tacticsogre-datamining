@@ -38,7 +38,7 @@ enum IT : s16 {
 	/* 0x22 */ IncreaseShopLevelTo,  // set GF_shop_level increase only
 	/* 0x23 */ DisplayTargetMarkerOnBattleUnit,  // “Target” marker
 	/* 0x24 */ ConsumeItemDuringBattle,
-	/* 0x25 */ _Unknown25,
+	/* 0x25 */ SetUnionLevel,
 	/* 0x26 */ _Unknown26,
 	/* 0x27 */ _Unknown27,
 	/* 0x28 */ _Unknown28,
@@ -101,8 +101,8 @@ enum IT : s16 {
 	/* 0x6d */ CompositeCondition6D,  // $0 and.. $2 and ($3 or.. $6)
 	/* 0x6e */ CompositeCondition6E,  // $0 and.. $4 and ($5 or $6)
 	/* 0x6f */ CompositeCondition6F,  // $0 and.. $5 and ($6 or $7) and $8
-	/* 0x70 */ CompositeCondition70,  // TODO
-	/* 0x71 */ CompositeCondition71,  // TODO
+	/* 0x70 */ CompositeCondition70,  // $0 and.. $6 and ($7 or $8)
+	/* 0x71 */ CompositeCondition71,  // $0 and.. $3 and ($4 or.. $7)
 
 	_ = -1,
 };
