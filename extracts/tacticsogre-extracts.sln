@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deobfuscate", "Deobfuscate\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnpackPakd", "UnpackPakd\UnpackPakd.csproj", "{EFE464A1-BD84-4249-AFF9-CC9A064E8D48}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtractText", "ExtractText\ExtractText.csproj", "{4263AD93-EEC1-47A7-869C-7C4701419057}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{EFE464A1-BD84-4249-AFF9-CC9A064E8D48}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFE464A1-BD84-4249-AFF9-CC9A064E8D48}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFE464A1-BD84-4249-AFF9-CC9A064E8D48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4263AD93-EEC1-47A7-869C-7C4701419057}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4263AD93-EEC1-47A7-869C-7C4701419057}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4263AD93-EEC1-47A7-869C-7C4701419057}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4263AD93-EEC1-47A7-869C-7C4701419057}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

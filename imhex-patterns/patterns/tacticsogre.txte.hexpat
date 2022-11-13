@@ -1,13 +1,16 @@
 #pragma MIME application/x-tacticsogre-txte
 #pragma endian little
 
-struct TxteOffset {
-	u64 offset;
-	char text[] @ offset;
-};
-
 struct TxteEntry {
-	TxteOffset offsets[parent.entrySize / 8] [[inline]];
+	u64 keyOffset;
+	u64 valueOffset;
+	u64 unknown1Offset;
+	u64 unknown2Offset;
+
+	char key[] @ keyOffset;
+	char value[] @ valueOffset;
+	char unknown1[] @ unknown1Offset;
+	char unknown2[] @ unknown2Offset;
 };
 
 struct Txte {

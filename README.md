@@ -19,3 +19,4 @@ Most useful data in Reborn editon is obfuscated, deobfuscation is needed before 
 ## [extracts](./extracts)
 
 * [Deobfuscate](./extracts/Deobfuscate): a basic game data deobfuscator.
+* [ExtractText/GameTextEncoding](./extracts/ExtractText/GameTextEncoding.cs): a game text decoder (for human).
