@@ -10,7 +10,6 @@ var dataPsp = @"..\..\..\..\tacticsogre-psp-datamining\extracts\data\";
 var deserializer = new YamlDotNet.Serialization.Deserializer();
 var texts = deserializer.Deserialize<dynamic>(File.ReadAllText(@"..\texts.yaml"));
 static List<string> castTexts(dynamic textsLeaf) => ((List<object>)textsLeaf).Cast<string>().ToList();
-string[] clans = { "威斯塔", "嘉尔加斯坦", "巴格拉姆", "杰诺比亚", "洛迪斯", "波鲁玛卡", "巴尔鲍达" };
 
 
 // translations.yaml
@@ -26,7 +25,6 @@ var translations = new Dictionary<string, List<List<string>>>();
     var dict = new Dictionary<string, List<string>>();
     foreach (var child in node.Values)
     {
-
         var entry = castTexts(child["CHR"]["NAME"]);
         if (entry[0] == "{93}")
         {
@@ -110,11 +108,18 @@ var translations = new Dictionary<string, List<List<string>>>();
     translations["strongpoint"] = dict.Values.ToList();
 }
 {
-    translations["clan"] = translationsPsp["clan"];
-    for (var i = 0; i < clans.Length; i++)
+    var dictPsp = translationsPsp["clan"].ToDictionary(entry => entry[1]);
+
+    var node = texts["_CLAN"];
+    var dict = new Dictionary<string, List<string>>();
+    foreach (var child in node.Values)
     {
-        translations["clan"][i][2] = clans[i];
+        var entry = castTexts(child["NAME"]);
+        var key = entry[1];
+        entry.AddRange(dictPsp[key].Skip(3));
+        dict.Add(key, entry);
     }
+    translations["clan"] = dict.Values.ToList();
 }
 File.WriteAllText($@"..\translations.yaml", Util.YamlSerializer.Serialize(translations));
 
@@ -146,10 +151,11 @@ var offichn = new Dictionary<char, Dictionary<string, string>>();
     }
 }
 {
+    var node = texts["_CLAN"];
     var dict = offichn['l'] = new();
-    for (var i = 0; i < clans.Length; i++)
+    foreach (var kvp in node)
     {
-        dict.Add((i + 1).ToString(), clans[i]);
+        dict.Add(kvp.Key.TrimStart('0'), kvp.Value["NAME"][2]);
     }
 }
 {
@@ -157,7 +163,6 @@ var offichn = new Dictionary<char, Dictionary<string, string>>();
     var dict = offichn['p'] = new();
     foreach (var kvp in node)
     {
-        if (!kvp.Value.ContainsKey("NAME")) continue;
         dict.Add(kvp.Key.TrimStart('0'), kvp.Value["NAME"][2]);
     }
 }

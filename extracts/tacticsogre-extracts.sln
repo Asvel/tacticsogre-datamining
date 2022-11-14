@@ -5,11 +5,15 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deobfuscate", "Deobfuscate\Deobfuscate.csproj", "{82CD77F1-EC7A-4BA8-8328-B30AFBD0E81C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnpackPakd", "UnpackPakd\UnpackPakd.csproj", "{EFE464A1-BD84-4249-AFF9-CC9A064E8D48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnpackPakd", "UnpackPakd\UnpackPakd.csproj", "{EFE464A1-BD84-4249-AFF9-CC9A064E8D48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtractText", "ExtractText\ExtractText.csproj", "{4263AD93-EEC1-47A7-869C-7C4701419057}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtractText", "ExtractText\ExtractText.csproj", "{4263AD93-EEC1-47A7-869C-7C4701419057}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtractTranslation", "ExtractTranslation\ExtractTranslation.csproj", "{0DF8D2D8-556D-4FA6-95BE-D821F094CBD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtractTranslation", "ExtractTranslation\ExtractTranslation.csproj", "{0DF8D2D8-556D-4FA6-95BE-D821F094CBD9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtractScreenplay", "ExtractScreenplay\ExtractScreenplay.csproj", "{870828FA-08EE-436A-A7EC-762478F6CC6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtractIntermediate", "ExtractScenario\ExtractIntermediate.csproj", "{55042B36-3BDA-4DEA-81E0-D2ABC55AE5DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{0DF8D2D8-556D-4FA6-95BE-D821F094CBD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DF8D2D8-556D-4FA6-95BE-D821F094CBD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DF8D2D8-556D-4FA6-95BE-D821F094CBD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{870828FA-08EE-436A-A7EC-762478F6CC6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{870828FA-08EE-436A-A7EC-762478F6CC6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{870828FA-08EE-436A-A7EC-762478F6CC6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{870828FA-08EE-436A-A7EC-762478F6CC6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55042B36-3BDA-4DEA-81E0-D2ABC55AE5DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55042B36-3BDA-4DEA-81E0-D2ABC55AE5DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55042B36-3BDA-4DEA-81E0-D2ABC55AE5DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55042B36-3BDA-4DEA-81E0-D2ABC55AE5DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

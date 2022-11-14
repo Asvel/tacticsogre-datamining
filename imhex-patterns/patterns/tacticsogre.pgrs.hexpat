@@ -65,7 +65,7 @@ struct PgrsEntry {
 	/* 0x28 */ u8 bgmControlOpening;
 	/* 0x29 */ u8 bgmControlEnding;
 	/* 0x2a */ u8 _unknown1;
-	/* 0x2b */ u8 _unknown2;
+	/* 0x2b */ padding[1];  // always 0xff
 };
 
 struct Pgrs {
