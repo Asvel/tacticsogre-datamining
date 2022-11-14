@@ -17,8 +17,10 @@ var sceneNames = deserializer.Deserialize<Dictionary<ushort, string>>(File.ReadA
 string formatSceneName(ushort sceneId) =>
     $"{sceneId} <{(sceneNames.TryGetValue(sceneId, out var sceneName) ? sceneName : "")}>";
 
+var globalFlagUsed = new HashSet<ushort>();
 string formatGlobalFlag(ushort flagId)
 {
+    globalFlagUsed!.Add(flagId);
     return $"GF{flagId:x4}" + interpolateGameTexts(flagId switch
     {
         0x0000 => $"",
@@ -732,4 +734,56 @@ var wrInvkTasks = new Dictionary<int, object>();
         wrInvkTasks.Add(i + 1, combined);
     }
 }
-File.WriteAllText(@"..\wrInvkTasks.yaml", serializer.Serialize(wrInvkTasks));
+File.WriteAllText(@"..\wr-invks-tasks.yaml", serializer.Serialize(wrInvkTasks));
+
+
+{
+    var store = new byte[0x500];
+    var prints = new List<string>();
+    var xlce = Util.LoadPakd(getDataPath(@"event\event_data.pack"), x => x == 3)[3];
+    var count = BitConverter.ToInt32(xlce, 4);
+    var reader = new BinaryReader(new MemoryStream(xlce));
+    reader.BaseStream.Position = BitConverter.ToInt32(xlce, 8) + 4;
+    for (int i = 1; i < count; i++)
+    {
+        var position = reader.ReadUInt16();
+        var groupMask = reader.ReadUInt16();
+        var sizeType = position & 0b1111;
+        position >>= 4;
+        var bitPosition = 0;
+        switch (sizeType)
+        {
+            case 1:
+                bitPosition = position & 0b111;
+                position >>= 3;
+                store[position] |= (byte)(0b1 << bitPosition);
+                break;
+            case 2:
+                bitPosition = position & 0b1;
+                position >>= 1;
+                position += 0x0200;
+                store[position] |= (byte)(0b1111 << (bitPosition * 4));
+                bitPosition *= 4;  // for print
+                break;
+            case 3:
+                position += 0x0400;
+                store[position] = 0xff;
+                break;
+            case 4:
+                position *= 2;
+                position += 0x0480;
+                store[position] = 0xff;
+                store[position + 1] = 0xff;
+                break;
+            default:
+                throw new InvalidDataException();
+        }
+        var groupsText = string.Join("", Enumerable.Range(0, 15)
+            .Where(i => (groupMask & (1 << i)) != 0).Select(i => i.ToString("x")));
+        if (groupsText == "") groupsText = "-";
+        var used = globalFlagUsed.Contains((ushort)i) ? '✓' : ' ';
+        prints.Add($"{used} GF{i:x4}:{sizeType} {position:x4}.{bitPosition} {groupsText}");
+    }
+    File.WriteAllLines(@"..\global-flags.txt", prints);
+    File.WriteAllBytes(@"..\global-flags.bin", store);
+}
