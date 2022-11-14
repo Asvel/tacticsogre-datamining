@@ -28,18 +28,18 @@ enum IT : s16 {
 	/* 0x18 */ Noop18,
 	/* 0x19 */ ChangeClearConditionUnit,  // and schedule a UI promotion
 	/* 0x1a */ TransferUnitsAllegianceTo,  // transfer all units with same allegiance as protagonist
-	/* 0x1b */ _Unknown1B,
+	/* 0x1b */ SetBattleUnitFaction,  // player / enemy / third-party
 	/* 0x1c */ AddExtraGameOverConditionText,  // common/tables/battle_text.xlc[2840+x]
 	/* 0x1d */ SetDungeonFlag,  // dungeon: PotD, Phorampa Wildwood, etc.
 	/* 0x1e */ ResetDungeonFlags,
-	/* 0x1f */ _Unknown1F,
+	/* 0x1f */ ChangeUnitClass,
 	/* 0x20 */ ConsumeAndUnequipItem,
 	/* 0x21 */ ObtainAppellation,  // aka. Order Title, they treat some other things (id > 100) as appellation too
 	/* 0x22 */ IncreaseShopLevelTo,  // set GF_shop_level increase only
 	/* 0x23 */ DisplayTargetMarkerOnBattleUnit,  // “Target” marker
 	/* 0x24 */ ConsumeItemDuringBattle,
-	/* 0x25 */ SetUnionLevel,
-	/* 0x26 */ _Unknown26,
+	/* 0x25 */ IncreaseUnionLevelTo,  // set GF_union_level increase only
+	/* 0x26 */ IncreaseChariotTurnLimitTo,  // set GF_CHARIOT_turn_limit increase only
 	/* 0x27 */ _Unknown27,
 	/* 0x28 */ _Unknown28,
 	/* 0x29 - 0x2f not used */
@@ -60,10 +60,10 @@ enum IT : s16 {
 	/* 0x3d */ CompareBattleUnitCurrentHpGreaterOrEqual,  // percent%
 	/* 0x3e */ CompareCurrentStrongpointMini,  // minimap node
 	/* 0x3f */ CompareIfOnlyOneSallyUnit,  // for the Brigantys combat avoiding event
-	/* 0x40 */ CompareIfProtagonistUnarmed,  // for the Brigantys combat avoiding event
-	/* 0x41 */ CompareIfAnyOurUnitAtBattlestagePosition,  // compare to screenplays/global/2.xlc[x]
-	/* 0x42 */ _Unknown42,
-	/* 0x43 */ _Unknown43,
+	/* 0x40 */ CompareIfProtagonistUnequipped,  // for the Brigantys combat avoiding event
+	/* 0x41 */ CompareIfAnyPlayerUnitAtBattlestagePosition,  // compare to screenplays/global/2.xlc[x]
+	/* 0x42 */ CompareUnitHeartCountGreaterOrEqual,
+	/* 0x43 */ CompareUnitHeartCountLessOrEqual,
 	/* 0x44 */ CompareIfUnitAtBattlestagePosition,  // compare to screenplays/global/2.xlc[x]
 	/* 0x45 */ CompareDungeonFlag,  // dungeon: PotD, Phorampa Wildwood, etc.
 	/* 0x46 */ CompareCurrentWeather,
