@@ -10,6 +10,7 @@
             "bo" => arg?.Equals(true) == true ? "true" : "false",
             "ch" => GetText("character", arg, unitNameMap),
             "cl" => GetText("clan", arg),
+            "it" => GetText("item", arg),
             "op" => compareOperators[Convert.ToByte(arg)],
             "pe" => $"{"LNC"[Convert.ToUInt16(arg)]}",
             "sp" => GetText("strongpoint", arg),
@@ -37,6 +38,7 @@
                 var dict = texts[type] = new();
                 foreach (var kvp in textsRaw[prefix])
                 {
+                    if (!kvp.Value.ContainsKey(suffix)) continue;
                     dict.Add(Convert.ToUInt16(kvp.Key), kvp.Value[suffix][langIndex]);
                 }
             }
@@ -45,6 +47,9 @@
             loadText("clan", "_CLAN", "NAME");
             loadText("strongpoint", "STRONGHOLD_LC_STRONGHOLD", "NAME");
             loadText("wr_rumor", "RUMOR_TEXT_LC_RUMOR", "TITLE");
+            loadText("item", "ARMSTEXT_LC_ARMS", "NAME");
+            loadText("item1000", "COMMODITYTEXT_LC_COMMODITY", "NAME");
+            foreach (var (id, name) in texts["item1000"]) texts["item"].Add((ushort)(id + 1000), name);
         }
 
         string GetText(string type, object? arg, Dictionary<ushort, ushort>? idMap = null)
