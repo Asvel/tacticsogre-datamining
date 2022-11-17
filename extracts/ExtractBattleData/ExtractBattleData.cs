@@ -15,8 +15,11 @@ var langIndex = 2;
         if (index++ == 90) break;
         var entry = entry_.Span;
         var growth = new int[11];
-        growth[10] = BitConverter.ToUInt16(entry[0x3e..]);
-        if (growth[10] == 0) continue;
+        var random = BitConverter.ToUInt16(entry[0x3e..]);
+        if (random == 0) continue;
+        if (random % 2 == 1) random--;  // int div 2 before random scaling (0x14032F6CE)
+        random--;  // int trunc after random scaling (0x14032F78A)
+        growth[10] = random;
         for (var i = 0; i < 10; i++)
         {
             growth[i] = BitConverter.ToUInt16(entry[(0x04 + i * 0x06)..]);
@@ -28,7 +31,7 @@ var langIndex = 2;
         var print = growth.Select(v => $"{v / 10.0:f1}").Prepend($"{index:x2}").Append(name);
         classGrowths.Add(string.Join('|', print));
     }
-    File.WriteAllLines(@"..\class-growths.txt", classGrowths);
+    File.WriteAllLines(@"..\class-growths.csv", classGrowths);
 }
 
 {
@@ -50,5 +53,5 @@ var langIndex = 2;
         raceGrowths.Add(string.Join('|', print));
     }
     // every == "0.2|0.2|0.1|0.1|0.1|0.1|0.1|0.1|0.1|0.1" (or empty)
-    // File.WriteAllLines(@"..\race-growths.txt", raceGrowths);
+    // File.WriteAllLines(@"..\race-growths.csv", raceGrowths);
 }
