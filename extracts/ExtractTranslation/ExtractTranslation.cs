@@ -10,6 +10,8 @@ var dataPsp = @"..\..\..\..\tacticsogre-psp-datamining\extracts\data\";
 var deserializer = new YamlDotNet.Serialization.Deserializer();
 var texts = deserializer.Deserialize<dynamic>(File.ReadAllText(@"..\texts.yaml"));
 static List<string> castTexts(dynamic textsLeaf) => ((List<object>)textsLeaf).Cast<string>().ToList();
+var textsPsp = deserializer.Deserialize<Dictionary<string, Dictionary<int, List<List<string>>>>>(
+    File.ReadAllText(dataPsp + "texts.yaml"));
 
 
 // translations.yaml
@@ -120,6 +122,60 @@ var translations = new Dictionary<string, List<List<string>>>();
         dict.Add(key, entry);
     }
     translations["clan"] = dict.Values.ToList();
+}
+{
+    var dictPsp = new Dictionary<string, List<string>>();
+    foreach (var item in textsPsp["battle"].Values)
+    {
+        dictPsp.TryAdd(item[0][1], item[0]);
+    }
+
+    {
+        var node = texts["ARMSTEXT_LC_ARMS"];
+        var dict = new Dictionary<string, List<string>>();
+        foreach (var child in node.Values)
+        {
+            var entry = castTexts(child["NAME"]);
+            var key = entry[1];
+            if (string.IsNullOrEmpty(key) || dict.ContainsKey(key)) continue;
+            if (key.Length > 2 && key[^2] == '+') continue;
+            if (key[^1] == '改') continue;
+            if (dictPsp.TryGetValue(key, out var entryPsp))
+            {
+                entry.AddRange(entryPsp.Skip(2));
+            }
+            else
+            {
+                entry.Add("");
+            }
+            dict.Add(key, entry);
+        }
+        translations["arms"] = dict.Values.ToList();
+    }
+    {
+        var node = texts["COMMODITYTEXT_LC_COMMODITY"];
+        var dict = new Dictionary<string, List<string>>();
+        foreach (var child in node.Values)
+        {
+            if (!child.ContainsKey("NAME") || !child.ContainsKey("HELP")) continue;
+            var entry = castTexts(child["NAME"]);
+            var key = entry[1];
+            if (string.IsNullOrEmpty(key) || dict.ContainsKey(key)) continue;
+            if (key.Length > 2 && key[^2] == '+') continue;
+            if (key[^1] == 'Ⅱ' || key[^1] == 'Ⅲ' || key[^1] == 'Ⅳ') continue;
+            if (child["HELP"][1]?.StartsWith("デバッグ用") != false) continue;
+            if (dictPsp.TryGetValue(key, out var entryPsp))
+            {
+                entry.AddRange(entryPsp.Skip(2));
+            }
+            else
+            {
+                entry.Add("");
+            }
+            dict.Add(key, entry);
+        }
+        translations["commodity"] = dict.Values.ToList();
+    }
 }
 File.WriteAllText($@"..\translations.yaml", Util.YamlSerializer.Serialize(translations));
 
