@@ -40,8 +40,8 @@ enum IT : s16 {
 	/* 0x24 */ ConsumeItemDuringBattle,
 	/* 0x25 */ IncreaseUnionLevelTo,  // set GF_union_level increase only
 	/* 0x26 */ IncreaseChariotTurnLimitTo,  // set GF_CHARIOT_turn_limit increase only
-	/* 0x27 */ _Unknown27,
-	/* 0x28 */ _Unknown28,
+	/* 0x27 */ SetSystemFlag,  // cross-save flags
+	/* 0x28 */ IncreaseGlobalFlagTo,  // set GFxxxx increase only
 	/* 0x29 - 0x2f not used */
 
 	/* 0x30 */ CompareGlobalFlag = 0x30,
@@ -81,8 +81,8 @@ enum IT : s16 {
 	/* 0x52 */ CompareIfOverallChariotAndRetreatingNotUsed,
 	/* 0x53 */ CompareIfUnitExistsInBarrack,  //  check if a character “playable” real time
 	/* 0x54 */ _Unknown54,
-	/* 0x55 */ _Unknown55,
-	/* 0x56 */ _Unknown56,
+	/* 0x55 */ CompareSystemFlag,  // cross-save flags
+	/* 0x56 */ CompareSystemPlatform,  // Steam / Switch / PS4 / PS5
 	/* 0x57 - 0x5f not used */
 
 	/* 0x60 */ CompositeConditionAllTrue = 0x60,  // $1 and.. $n

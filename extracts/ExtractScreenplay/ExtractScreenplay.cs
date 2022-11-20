@@ -234,8 +234,8 @@ string formatInstruction(short type, BinaryReader reader)
         0x24 => $"ConsumeItemDuringBattle({r16():it})",
         0x25 => $"{formatGlobalFlag(0x0882)} ↑= {r8()}",
         0x26 => $"{formatGlobalFlag(0x0884)} ↑= {r8()}",
-        0x27 => $"_UnknownInstruction27({r8():x2}-{r8():x2}-{r8():x2})",
-        0x28 => $"_UnknownInstruction28({r8():x2}-{r8():x2}-{r8():x2})",
+        0x27 => $"SF{r16():x4} = {r8()}",
+        0x28 => $"{formatGlobalFlag(r16())} ↑= {r8()}",
         // >= 0x29 and <= 0x2f => $"Noop",
         0x30 => $"{formatGlobalFlag(r16())} {r8():op} {r8()}",
         0x31 => $"{formatLocalFlag(r16())} {r8():op} {r8()}",
@@ -273,9 +273,9 @@ string formatInstruction(short type, BinaryReader reader)
         0x51 => $"OverallIncapacitatedUnitsAmount {r8():op} {r16()}",
         0x52 => $"OverallChariotAndRetreatingNotUsed {r8():op} {r8()}",
         0x53 => _("IsUnit[{1:ch}]ExistsInBarrack {0:op} true", r8(), r16()),
-        0x54 => $"_UnknownInstruction54({r8():x2}-{r8():x2})",
-        0x55 => $"_UnknownInstruction55({r8():x2}-{r8():x2}-{r8():x2}-{r8():x2})",
-        0x56 => $"_UnknownInstruction56({r8():x2}-{r8():x2})",
+        0x54 => $"_UnknownInstruction54 {r8():op} {r8()}",
+        0x55 => $"SF{r16():x4} {r8():op} {r8()}",
+        0x56 => $"SystemPlatform {r8():op} {r8()}",
         // >= 0x57 and <= 0x5f => $"Noop",
         0x60 => r8() switch { 1 => $"$0", 2 => $"$0 and $1", var n => $"$0 and.. ${n}" },
         0x61 => $"{r8():!4}$0 and ($1 or $2) and $3",
@@ -322,7 +322,7 @@ string formatNexting(byte type, ushort flagId, byte operator_, ushort value)
             _ => $"<error>"
 
         },
-        0x07 => $"_UnknownNextType07 {flagId} {operator_:op} {value}",
+        0x07 => $"SF{flagId:x4} {operator_:op} {value}",
         _ => throw new InvalidDataException(),
     });
 }
