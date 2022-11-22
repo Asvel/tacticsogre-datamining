@@ -47,7 +47,7 @@ for (var langIndex = 0; langIndex < langs.Length; langIndex++)
                 node.TryAdd(lastPart, new string[langs.Length]);
                 ((string[])node[lastPart])[langIndex] = value;
             }
-            reader.ReadInt64();  // contents of these two fields are cross language identical
+            reader.ReadInt64();  // gender, only used in de-de/es-es/fr-fr
             reader.ReadInt64();
         }
     }

@@ -4,12 +4,12 @@
 struct TxteEntry {
 	u64 keyOffset;
 	u64 valueOffset;
-	u64 unknown1Offset;
+	u64 genderOffset;  // only used in de-de/es-es/fr-fr
 	u64 unknown2Offset;
 
 	char key[] @ keyOffset;
 	char value[] @ valueOffset;
-	char unknown1[] @ unknown1Offset;
+	char gender[] @ genderOffset;
 	char unknown2[] @ unknown2Offset;
 };
 
