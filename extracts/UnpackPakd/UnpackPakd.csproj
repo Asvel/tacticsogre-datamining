@@ -9,4 +9,8 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ExtractText\ExtractText.csproj" />
+  </ItemGroup>
+
 </Project>
