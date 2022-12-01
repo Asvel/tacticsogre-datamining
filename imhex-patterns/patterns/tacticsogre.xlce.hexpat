@@ -74,8 +74,18 @@ struct XlceEntry_BattleData14_Class {
 	padding[144];
 };
 
+struct XlceEntry_BattleData17_Battlestage {
+    padding[40];
+    u16 entryunitId;
+    padding[176];
+    u16 entryunitIdSpecial;
+    padding[10];
+};
+
 struct XlceEntry_BattleData23_Race {
-	padding[28];
+	padding[2];
+	u8 gender;
+	padding[25];
 	u8 growthHp;
 	u8 growthMp;
 	padding[1];
@@ -94,7 +104,28 @@ struct XlceEntry_BattleData23_Race {
 	u8 growthMnd;
 	padding[1];
 	u8 growthRes;
-	padding[38];
+	padding[10];
+	u8 classChangeType;
+	u8 classChangeRace;
+	padding[26];
+};
+
+struct XlceEntry_EntryUnit_Drop {
+    u16 itemId;
+    u8 amount;
+    u8 dropRate; // (dropRate/255)%
+};
+struct XlceEntry_EntryUnit {
+    u16 nameId;
+    u16 raceId;
+    padding[2];
+    u8 classId;
+    padding[3];
+    u8 positionX;
+    u8 positionY;
+    padding[106];
+    XlceEntry_EntryUnit_Drop drops[4];
+    padding[62];
 };
 
 using XlceEntry = XlceEntry_Common;

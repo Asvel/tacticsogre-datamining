@@ -651,6 +651,36 @@ for (var chapterIndex = 0u; chapterIndex < chapterNames.Length; chapterIndex++)
     File.WriteAllText(@"..\_strongpointsScreenplayOrdered.yaml", serializer.Serialize(strongpoints));
 }
 
+{
+    var battlestages = new List<Entry>();
+    var battlestageDedup = new HashSet<(string, string, int)>();
+    foreach (var pgrsEntry in pgrs.Values)
+    {
+        if (!pgrsEntry.TryGetValue("battlestageId", out var battlestageId)) continue;
+        var stage = (string)pgrsEntry["stage"];
+        if (stage == "C2a_ST_170" && (int)battlestageId != 24) continue;  // same drops
+        if (stage.StartsWith("C1_ST_34")) continue;  // chapter 1 Phorampa Wildwood
+        if (!pgrsEntry.TryGetValue("invk", out var invk_)) continue;
+        if (invk_ is not Entry invk) continue;
+        if (!((string)invk["when"]).EndsWith("incoming_strongpoint")) continue;
+        var conditons = (List<string>)invk.Values.Skip(1).First();
+        var strongpointConidtion = conditons.Find(s => s.StartsWith("CurrentStrongpoint"));
+        var strongpoint = strongpointConidtion![(strongpointConidtion!.IndexOf(":") + 1)..];
+        var dedupKey = (stage[..stage.IndexOf('_')], strongpoint, (int)battlestageId);
+        if (!battlestageDedup.Contains(dedupKey))
+        {
+            battlestageDedup.Add(dedupKey);
+            battlestages.Add(new()
+            {
+                ["stage"] = stage,
+                ["strongpoint"] = strongpoint,
+                ["battlestageId"] = battlestageId,
+            });
+        }
+    }
+    File.WriteAllText(@"..\_battlestages.yaml", serializer.Serialize(battlestages));
+}
+
 Dictionary<string, object> pgrsGrouped;
 {
     var sceneToPgrsIndexes = new Dictionary<string, List<string>>();
