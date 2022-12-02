@@ -64,6 +64,7 @@ var langIndex = 2;
     var ignoredItems = new HashSet<int>();
     for (int i = 1145; i <= 1149; i++) ignoredItems.Add(i);  // oberyth coin
     for (int i = 1012; i <= 1027; i++) ignoredItems.Add(i);  // magic leaf etc.
+    for (int i = 1621; i <= 1625; i++) ignoredItems.Add(i);  // experience charm
     var shopItemData = Util.LoadPakd(getDataPath(@"menu\menu_data.pack"), id => id == 26)[26];
     foreach (var entry_ in Util.GetXlceEntries(shopItemData))
     {
@@ -95,6 +96,7 @@ var langIndex = 2;
     }
 
     var battlestageDrops = new List<Entry>();
+    var previousBattlestageDrops = "";
     foreach (var battlestage in battlestages)
     {
         var strongpoint = battlestage["strongpoint"];
@@ -158,15 +160,19 @@ var langIndex = 2;
             }
             if (battlestageUnits.Count > 0)
             {
-                battlestageDrops.Add(new()
+                var battlestageUnitsString = Util.YamlSerializer.Serialize(battlestageUnits);  // FIXME: more efficient way?
+                if (battlestageUnitsString != previousBattlestageDrops)
                 {
-                    ["stage"] = battlestage["stage"],
-                    ["strongpoint"] = strongpoint,
-                    //["entryunit"] = entryunitFilepath,
-                    ["enemies"] = battlestageUnits,
-                });
+                    battlestageDrops.Add(new()
+                    {
+                        ["stage"] = battlestage["stage"],
+                        ["strongpoint"] = strongpoint,
+                        //["entryunit"] = entryunitFilepath,
+                        ["enemies"] = battlestageUnits,
+                    });
+                }
+                previousBattlestageDrops = battlestageUnitsString;
             }    
-
         }
         parseEntryunit(entryunitIdNormal);
         strongpoint += langIndex == 2 ? "（特殊）" : " (Special)";

@@ -654,18 +654,37 @@ for (var chapterIndex = 0u; chapterIndex < chapterNames.Length; chapterIndex++)
 {
     var battlestages = new List<Entry>();
     var battlestageDedup = new HashSet<(string, string, int)>();
+    var strongpoint = "";
+    var stageStrongpoints = new Dictionary<string, int>()
+    {
+        { "C1_ST_001", 26 },
+        { "C2a_ST_001", 9 },
+        { "C2b_ST_001", 13 },
+        { "C3a_ST_001", 25 },
+        { "C3b_ST_001", 9 },
+        { "C3c_ST_001", 25 },
+        { "C4_ST_001", 15 },
+    };
     foreach (var pgrsEntry in pgrs.Values)
     {
-        if (!pgrsEntry.TryGetValue("battlestageId", out var battlestageId)) continue;
         var stage = (string)pgrsEntry["stage"];
+        if (stageStrongpoints.TryGetValue(stage, out var stageStrongpoint))
+        {
+            var s = stageStrongpoint.ToString();
+            strongpoint = interpolateGameTexts($"{s:sp}")[(s.Length + 1)..];
+        }
+
+        if (pgrsEntry.TryGetValue("invk", out var invk_) && invk_ is Entry invk && ((string)invk["when"]).EndsWith("incoming_strongpoint"))
+        {
+            var conditons = (List<string>)invk.Values.Skip(1).First();
+            var strongpointConidtion = conditons.Find(s => s.StartsWith("CurrentStrongpoint"));
+            strongpoint = strongpointConidtion![(strongpointConidtion!.IndexOf(":") + 1)..];
+        }
+
+        if (!pgrsEntry.TryGetValue("battlestageId", out var battlestageId)) continue;
         if (stage == "C2a_ST_170" && (int)battlestageId != 24) continue;  // same drops
         if (stage.StartsWith("C1_ST_34")) continue;  // chapter 1 Phorampa Wildwood
-        if (!pgrsEntry.TryGetValue("invk", out var invk_)) continue;
-        if (invk_ is not Entry invk) continue;
-        if (!((string)invk["when"]).EndsWith("incoming_strongpoint")) continue;
-        var conditons = (List<string>)invk.Values.Skip(1).First();
-        var strongpointConidtion = conditons.Find(s => s.StartsWith("CurrentStrongpoint"));
-        var strongpoint = strongpointConidtion![(strongpointConidtion!.IndexOf(":") + 1)..];
+
         var dedupKey = (stage[..stage.IndexOf('_')], strongpoint, (int)battlestageId);
         if (!battlestageDedup.Contains(dedupKey))
         {
