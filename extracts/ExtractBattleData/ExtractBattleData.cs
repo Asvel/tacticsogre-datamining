@@ -79,6 +79,7 @@ var langIndex = 2;
     var battleData = Util.LoadPakd(getDataPath(@"battle\battle_data_release.pack"));
     var battlestageEntries = Util.GetXlceEntries(battleData[17]).ToArray();
     var equipmentNameIds = Util.GetXlceEntries(battleData[11]).Select(e => BitConverter.ToUInt16(e.Span[0x86..])).ToArray();
+    var equipmentSkillIds = Util.GetXlceEntries(battleData[11]).Select(e => e.Span[2]).ToArray();
     var classjobNameIds = Util.GetXlceEntries(battleData[14]).Select(e => BitConverter.ToUInt16(e.Span[0xb2..])).ToArray();
     var races = Util.GetXlceEntries(battleData[23]).ToArray();
 
@@ -124,6 +125,11 @@ var langIndex = 2;
                     string itemName = itemId < 1000
                         ? texts["ARMSTEXT_LC_ARMS"][equipmentNameIds[itemId].ToString("d3")]["NAME"][langIndex]
                         : texts["COMMODITYTEXT_LC_COMMODITY"][(itemId - 1000).ToString("d3")]["NAME"][langIndex];
+                    if ((610 <= itemId && itemId <= 626) || itemName == "迦楼罗")  // cursed weapon and a translation glitch
+                    {
+                        itemName += $"（{texts["SKILLTEXT_LC_SKILL"][equipmentSkillIds[itemId].ToString("d3")]["NAME"][langIndex]}）"
+                            .Replace("射击", "枪械");
+                    }
                     var dropRate = Math.Round(dropData[3] / 255.0 * 100);
                     unitDrops.Add(new()
                     {
