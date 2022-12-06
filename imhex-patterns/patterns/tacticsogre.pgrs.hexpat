@@ -2,41 +2,41 @@
 #pragma endian little
 
 enum PNT : s8 {  // FUN_088cc768
-    /* 0x00 */ Unconditional,
-    /* 0x01 */ StoreAndComparePlayerSelection,  // yes, a compare operation with side effect
-    /* 0x02 */ CompareGlobalFlag,
-    /* 0x03 */ CompareLocalFlag,
-    /* 0x04 */ CheckInvk,
-    /* 0x05 */ CompareCurrentReplayBranch,  // replay past scenario in Warren Report
-    /* 0x06 */ CompareIfUnitExistsInBarrack,  // check if a character “playable” real time
+	/* 0x00 */ Unconditional,
+	/* 0x01 */ StoreAndComparePlayerSelection,  // yes, a compare operation with side effect
+	/* 0x02 */ CompareGlobalFlag,
+	/* 0x03 */ CompareLocalFlag,
+	/* 0x04 */ CheckInvk,
+	/* 0x05 */ CompareCurrentReplayBranch,  // replay past scenario in Warren Report
+	/* 0x06 */ CompareIfUnitExistsInBarrack,  // check if a character “playable” real time
 };
 
 enum PMT : s8 {  // FUN_088cdcd8
-    /* 0x00 */ None,
-    /* 0x01 */ AddGuest,
-    /* 0x02 */ AddUnit,
-    /* 0x03 */ AddGeneralUnit,
-    /* 0x04 */ RemoveGuest,
-    /* 0x05 */ SystemMessage,
-    /* 0x06 */ PromptDataSavingWithMessage,
-    /* 0x07 */ _Unknown07,
-    /* 0x08 */ NameInput,
-    /* 0x09 */ SystemMessageDuringBattle,
-    /* 0x0a */ SaveFlagsIntoWorldAnchor,  // W.O.R.L.D. AnchorPoint
-    /* 0x0b */ ChangeChapter,
-    /* 0x0c */ _Unknown0c,
-    /* 0x0d */ AddGuestWithMessage,
-    /* 0x0e */ RemoveDeadUnit,
+	/* 0x00 */ None,
+	/* 0x01 */ AddGuest,
+	/* 0x02 */ AddUnit,
+	/* 0x03 */ AddGeneralUnit,
+	/* 0x04 */ RemoveGuest,
+	/* 0x05 */ SystemMessage,
+	/* 0x06 */ PromptDataSavingWithMessage,
+	/* 0x07 */ _Unknown07,
+	/* 0x08 */ NameInput,
+	/* 0x09 */ SystemMessageDuringBattle,
+	/* 0x0a */ SaveFlagsIntoWorldAnchor,  // W.O.R.L.D. AnchorPoint
+	/* 0x0b */ ChangeChapter,
+	/* 0x0c */ _Unknown0c,
+	/* 0x0d */ AddGuestWithMessage,
+	/* 0x0e */ RemoveDeadUnit,
 };
 
 bitfield PgrsFlags {
-    wrTerminate : 1;
-    padding : 6;
-    isScenario : 1;
+	wrTerminate : 1;
+	padding : 6;
+	isScenario : 1;
 };
 
 struct PgrsEntry {
-    /* 0x00 */ u16 stageId;
+	/* 0x00 */ u16 stageId;
 	/* 0x02 */ u16 mapId;
 	/* 0x04 */ u16 sceneId;
 	/* 0x06 */ u16 invkId;

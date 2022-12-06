@@ -7,7 +7,7 @@
 struct InvkEntry {
 	u16 invkId;
 	Instruction instructions[while(std::mem::read_signed($, 2) != -1)] [[inline]];
-    padding[2];
+	padding[2];
 };
 
 struct InvkGroup {
