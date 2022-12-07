@@ -142,6 +142,7 @@ var langIndex = 2;
                 if (unitDrops.Count > 0)
                 {
                     var nameId = BitConverter.ToUInt16(entry[0..]);
+                    if (nameId == 248) continue;  // CODA1 Sirene, not actually killed, won't drop
                     var race = races[BitConverter.ToUInt16(entry[2..])].Span;
                     var gender = race[3] == 0 ? "MALE" : "FEMALE";
                     var raceName = "";
