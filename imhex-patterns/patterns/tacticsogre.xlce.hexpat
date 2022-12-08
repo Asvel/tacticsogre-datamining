@@ -127,10 +127,19 @@ struct XlceEntry_BattleData23_Race {
 	padding[26];
 };
 
+struct XlceEntry_EntryUnit_Equipment {
+	u16 itemId;  // 0 means use default equipment in this slot
+	u8 dropRate;  // (dropRate/255)%
+	padding[1];
+};
+struct XlceEntry_EntryUnit_Item {
+	u16 itemId;
+	padding[2];
+};
 struct XlceEntry_EntryUnit_Drop {
 	u16 itemId;
 	u8 amount;
-	u8 dropRate; // (dropRate/255)%
+	u8 dropRate;  // (dropRate/255)%
 };
 struct XlceEntry_EntryUnit {
 	u16 nameId;
@@ -140,7 +149,9 @@ struct XlceEntry_EntryUnit {
 	padding[3];
 	u8 positionX;
 	u8 positionY;
-	padding[106];
+	padding[62];
+	XlceEntry_EntryUnit_Equipment equipments[7];
+	XlceEntry_EntryUnit_Item items[4];
 	XlceEntry_EntryUnit_Drop drops[4];
 	padding[62];
 };

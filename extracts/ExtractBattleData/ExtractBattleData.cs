@@ -62,6 +62,7 @@ var langIndex = 2;
 
 {
     var ignoredItems = new HashSet<int>();
+    for (int i = 537; i <= 583; i++) ignoredItems.Add(i);  // craftable rings
     for (int i = 1145; i <= 1149; i++) ignoredItems.Add(i);  // oberyth coin
     for (int i = 1012; i <= 1027; i++) ignoredItems.Add(i);  // magic leaf etc.
     for (int i = 1621; i <= 1625; i++) ignoredItems.Add(i);  // experience charm
@@ -115,11 +116,22 @@ var langIndex = 2;
             foreach (var entry_ in Util.GetXlceEntries(entryunitData))
             {
                 var entry = entry_.Span;
-                var unitDrops = new List<Entry>();
+                var rawDrops = new List<(int, int, int)>();
+                for (var i = 0; i < 7; i++)
+                {
+                    var dropData = entry.Slice(74 + i * 4, 4);
+                    if (dropData[2] == 0) continue;
+                    rawDrops.Add((BitConverter.ToUInt16(dropData), 1, dropData[2]));
+                }
                 for (var i = 0; i < 4; i++)
                 {
                     var dropData = entry.Slice(118 + i * 4, 4);
-                    var itemId = BitConverter.ToUInt16(dropData);
+                    rawDrops.Add((BitConverter.ToUInt16(dropData), dropData[2], dropData[3]));
+                }
+
+                var unitDrops = new List<Entry>();
+                foreach (var (itemId, amount, rate) in rawDrops)
+                {
                     if (itemId == 0) continue;
                     if (ignoredItems.Contains(itemId)) continue;
                     string itemName = itemId < 1000
@@ -130,15 +142,16 @@ var langIndex = 2;
                         itemName += $"（{texts["SKILLTEXT_LC_SKILL"][equipmentSkillIds[itemId].ToString("d3")]["NAME"][langIndex]}）"
                             .Replace("射击", "枪械");
                     }
-                    var dropRate = Math.Round(dropData[3] / 255.0 * 100);
+                    var dropRate = (int)Math.Round(rate / 255.0 * 100);
                     unitDrops.Add(new()
                     {
                         //["itemId"] = itemId,
                         ["item"] = itemName,
-                        ["amount"] = dropData[2],
+                        ["amount"] = amount,
                         ["rate"] = $"{dropRate}%",
                     });
                 }
+
                 if (unitDrops.Count > 0)
                 {
                     var nameId = BitConverter.ToUInt16(entry[0..]);
