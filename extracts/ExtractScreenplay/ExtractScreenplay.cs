@@ -684,6 +684,7 @@ for (var chapterIndex = 0u; chapterIndex < chapterNames.Length; chapterIndex++)
         if (!pgrsEntry.TryGetValue("battlestageId", out var battlestageId)) continue;
         if (stage == "C2a_ST_170" && (int)battlestageId != 24) continue;  // same drops
         if (stage.StartsWith("C1_ST_34")) continue;  // chapter 1 Phorampa Wildwood
+        if (stage.StartsWith("EP_")) continue;  // seems dummy data
 
         var dedupKey = (stage[..stage.IndexOf('_')], strongpoint, (int)battlestageId);
         if (!battlestageDedup.Contains(dedupKey))
