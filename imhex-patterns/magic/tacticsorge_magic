@@ -5,6 +5,19 @@
 !:mime application/x-tacticsogre-pakd
 
 0x00	string/b	xlce	Tactics Ogre compiled spreadsheet
+>0x0c lelong  0x04  -
+!:mime application/x-tacticsogre-xlce-size66
+>0x0c lelong  0x26  -
+!:mime application/x-tacticsogre-xlce-size26
+>0x0c lelong  0x54  -
+!:mime application/x-tacticsogre-xlce-size54
+>0x0c lelong  0xC4  -
+!:mime application/x-tacticsogre-xlce-sizeC4
+>0x0c lelong  0xD0  -
+!:mime application/x-tacticsogre-xlce-sizeD0
+>0x0c lelong  0xE6  -
+!:mime application/x-tacticsogre-xlce-sizeE6
+>0x0c lelong  x  (Size 0x%x)
 !:mime application/x-tacticsogre-xlce
 
 0x00	string/b	txte	Tactics Ogre compiled text
