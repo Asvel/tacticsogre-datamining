@@ -200,3 +200,23 @@ var langIndex = 2;
     }
     File.WriteAllText(@"..\drops.yaml", Util.YamlSerializer.Serialize(battlestageDrops));
 }
+
+{
+    var skillChances = new HashSet<string>();
+    var skillLevels = new char[] { 'Ⅰ', 'Ⅱ', 'Ⅲ', 'Ⅳ' };
+    var data = Util.LoadPakd(getDataPath(@"battle\battle_data_release.pack"), id => id == 25)[25];
+    var index = -1;
+    foreach (var entry_ in Util.GetXlceEntries(data))
+    {
+        index++;
+        var entry = entry_.Span;
+        var type = entry[2];
+        if (type != 5) continue;
+        var chance = entry[15];
+        var nameId = BitConverter.ToUInt16(entry[90..]);
+        string name = texts["SKILLTEXT_LC_SKILL"][nameId.ToString("d3")]["NAME"][langIndex];
+        name = name.TrimEnd(skillLevels);
+        skillChances.Add($"{name}|{chance}%");
+    }
+    File.WriteAllLines(@"..\skill-chances.csv", skillChances);
+}

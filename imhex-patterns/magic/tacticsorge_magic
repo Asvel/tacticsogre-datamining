@@ -11,6 +11,8 @@
 !:mime application/x-tacticsogre-xlce-size26
 >0x0c lelong  0x54  -
 !:mime application/x-tacticsogre-xlce-size54
+>0x0c lelong  0x66  -
+!:mime application/x-tacticsogre-xlce-size66
 >0x0c lelong  0xC4  -
 !:mime application/x-tacticsogre-xlce-sizeC4
 >0x0c lelong  0xD0  -
