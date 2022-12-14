@@ -13,12 +13,18 @@
 !:mime application/x-tacticsogre-xlce-size54
 >0x0c lelong  0x66  -
 !:mime application/x-tacticsogre-xlce-size66
+>0x0c lelong  0x98  -
+!:mime application/x-tacticsogre-xlce-size98
+>0x0c lelong  0xB4  -
+!:mime application/x-tacticsogre-xlce-sizeB4
 >0x0c lelong  0xC4  -
 !:mime application/x-tacticsogre-xlce-sizeC4
 >0x0c lelong  0xD0  -
 !:mime application/x-tacticsogre-xlce-sizeD0
 >0x0c lelong  0xE6  -
 !:mime application/x-tacticsogre-xlce-sizeE6
+>0x0c lelong  0x104  -
+!:mime application/x-tacticsogre-xlce-size104
 >0x0c lelong  x  (Size 0x%x)
 !:mime application/x-tacticsogre-xlce
 

@@ -6,6 +6,40 @@ var getDataPath = (string path) => Path.Combine(args[0], "Data", path);
 var deserializer = new YamlDotNet.Serialization.Deserializer();
 var texts = deserializer.Deserialize<dynamic>(File.ReadAllText(@"..\texts.yaml"));
 var langIndex = 2;
+var equipmentTypeNameIds = new Dictionary<byte, string>
+{
+    [1] = "WPNCAT01",
+    [2] = "WPNCAT02",
+    [3] = "WPNCAT03",
+    [4] = "WPNCAT04",
+    [5] = "WPNCAT05",
+    [7] = "WPNCAT07",
+    [8] = "WPNCAT08",
+    [10] = "WPNCAT10",
+    [11] = "WPNCAT11",
+    [12] = "WPNCAT12",
+    [14] = "WPNCAT14",
+    [15] = "WPNCAT20",
+    [16] = "WPNCAT21",
+    [17] = "WPNCAT15",
+    [18] = "WPNCAT16",
+    [19] = "WPNCAT17",
+    [20] = "WPNCAT18",
+    [22] = "ARMCAT01",
+};
+
+{
+    var battleData = Util.LoadPakd(getDataPath(@"battle\battle_data_release.pack"));
+    var xlces = new Dictionary<int, string>();
+    foreach (var (id, data) in battleData)
+    {
+        if (BitConverter.ToInt32(data, 0) != 0x65636c78/*xlce*/) continue;
+        var count = BitConverter.ToInt32(data, 4);
+        var entrySize = BitConverter.ToInt32(data, 12);
+        xlces.Add(id, $"{count},{entrySize}");
+    }
+    File.WriteAllText(@"..\_battleXlces.yaml", Util.YamlSerializer.Serialize(xlces));
+}
 
 {
     var classGrowths = new List<string>()
@@ -139,8 +173,7 @@ var langIndex = 2;
                         : texts["COMMODITYTEXT_LC_COMMODITY"][(itemId - 1000).ToString("d3")]["NAME"][langIndex];
                     if ((610 <= itemId && itemId <= 626) || itemName == "迦楼罗")  // cursed weapon and a translation glitch
                     {
-                        itemName += $"（{texts["SKILLTEXT_LC_SKILL"][equipmentSkillIds[itemId].ToString("d3")]["NAME"][langIndex]}）"
-                            .Replace("射击", "枪械");
+                        itemName += $"（{texts["COMMAND_LC_COMMAND"]["NAME"][equipmentTypeNameIds[equipmentSkillIds[itemId]]]["NAME"][langIndex]}）";
                     }
                     var dropRate = (int)Math.Round(rate / 255.0 * 100);
                     unitDrops.Add(new()
@@ -192,7 +225,7 @@ var langIndex = 2;
                     });
                 }
                 previousBattlestageDrops = battlestageUnitsString;
-            }    
+            }
         }
         parseEntryunit(entryunitIdNormal);
         strongpoint += langIndex == 2 ? "（特殊）" : " (Special)";
@@ -219,4 +252,212 @@ var langIndex = 2;
         skillChances.Add($"{name}|{chance}%");
     }
     File.WriteAllLines(@"..\skill-chances.csv", skillChances);
+}
+
+{
+    var battleData = Util.LoadPakd(getDataPath(@"battle\battle_data_release.pack"));
+    var attackTypes = Util.GetXlceEntries(battleData[19]).ToArray();
+
+    var statNames = new string[] { "STR", "VIT", "DEX", "INT", "MND", "RES" };
+    string printStatFactors(Span<byte> attackEntry)
+    {
+        var statFactors = new List<string>();
+        for (int i = 0; i < statNames.Length; i++)
+        {
+            var statFactor = BitConverter.ToInt16(attackEntry[(12 + i * 2)..]);
+            if (statFactor != 0)
+            {
+                statFactors.Add($"{statFactor / 100.0:f1}{statNames[i].ToLowerInvariant()}");
+            }
+        }
+        return string.Join("+", statFactors);
+    }
+    string printSelfToActionElementFactors(Span<byte> attackEntry)
+    {
+        var same = BitConverter.ToInt16(attackEntry[4..]);
+        var other = BitConverter.ToInt16(attackEntry[6..]);
+        var conflict = BitConverter.ToInt16(attackEntry[8..]);
+        if (other != 100) throw new InvalidDataException();
+        return $"{same / 100.0:f1},{conflict / 100.0:f1}";
+    }
+    string printSelfToTargetElementFactors(Span<byte> attackEntrySlice)
+    {
+        var effective = BitConverter.ToInt16(attackEntrySlice[236..]);
+        var normal = BitConverter.ToInt16(attackEntrySlice[238..]);
+        var uneffective = BitConverter.ToInt16(attackEntrySlice[240..]);
+        if (normal != 0) throw new InvalidDataException();
+        return $"{effective / 100}%,{uneffective / 100}%";
+    }
+
+    var weaponTypeAttackType = new Dictionary<(byte, bool), byte>();
+    foreach (var equipement_ in Util.GetXlceEntries(battleData[11]))
+    {
+        var equipmentEntry = equipement_.Span;
+        var equipmentType = equipmentEntry[2];
+        var isTwoHand = equipmentEntry[13] == 1;
+        var attackTypeId = equipmentEntry[18];
+        if (attackTypeId == 0 || equipmentType == 30 || equipmentType == 31) continue;
+        weaponTypeAttackType.TryAdd((equipmentType, isTwoHand), attackTypeId);
+    }
+    var attackTypeWeapons = new Dictionary<byte, HashSet<string>>();
+    foreach (var ((weaponType, isTwoHand), attackTypeId) in weaponTypeAttackType)
+    {
+        string weaponTypeName = texts["COMMAND_LC_COMMAND"]["NAME"][equipmentTypeNameIds[weaponType]]["NAME"][langIndex];
+        if (weaponTypeAttackType.TryGetValue((weaponType, !isTwoHand), out var anotherAttackTypeId)
+            && attackTypeId != anotherAttackTypeId)
+        {
+            weaponTypeName += $"（{(isTwoHand ? "双手" : "单手")}）";
+        }
+        attackTypeWeapons.TryAdd(attackTypeId, new());
+        attackTypeWeapons[attackTypeId].Add(weaponTypeName);
+    }
+    foreach (var equipement_ in Util.GetXlceEntries(battleData[11]))
+    {
+        var equipmentEntry = equipement_.Span;
+        var equipmentType = equipmentEntry[2];
+        var isTwoHand = equipmentEntry[13] == 1;
+        var attackTypeId = equipmentEntry[18];
+        if (equipmentType == 30 || equipmentType == 31) continue;
+        if (!attackTypeWeapons.ContainsKey(attackTypeId)) continue;
+        if (weaponTypeAttackType[(equipmentType, isTwoHand)] == attackTypeId) continue;
+
+        var nameId = BitConverter.ToUInt16(equipmentEntry[134..]);
+        string name;
+        try { name = texts["ARMSTEXT_LC_ARMS"][nameId.ToString("d3")]["NAME"][langIndex]; } catch { continue; }
+        if ((610 <= nameId && nameId <= 626))  // cursed weapon
+        {
+            name += $"（{texts["COMMAND_LC_COMMAND"]["NAME"][equipmentTypeNameIds[equipmentType]]["NAME"][langIndex]}）";
+        }
+        attackTypeWeapons[attackTypeId].Add(name);
+    }
+    var weaponFactors = new List<Entry>();
+    foreach (var (attackTypeId, weapons) in attackTypeWeapons)
+    {
+        var offenseEntry = attackTypes[attackTypeId].Span;
+        var defenseEntry = attackTypes[attackTypeId + 1].Span;
+        weaponFactors.Add(new()
+        {
+            ["weapons"] = weapons,
+            ["offenseEquipmentAtkFactor"] = $"{BitConverter.ToInt16(offenseEntry[0..]) / 100.0:f1}",
+            ["defenseEquipmentDefFactor"] = $"{BitConverter.ToInt16(defenseEntry[2..]) / 100.0:f1}",
+            ["offenseStatFactor"] = printStatFactors(offenseEntry),
+            ["defenseStatFactor"] = printStatFactors(defenseEntry),
+            ["elementSelfToActionFactor"] = printSelfToActionElementFactors(offenseEntry),
+            ["elementSelfToTatgetFactor"] = printSelfToTargetElementFactors(offenseEntry),
+        });
+    }
+    weaponFactors.Insert(0, weaponFactors[2]);
+    weaponFactors.RemoveAt(3);
+    File.WriteAllText(@"..\damage-factors.weapon.yaml", Util.YamlSerializer.Serialize(weaponFactors));
+
+    var magicGroupMagics = new Dictionary<(byte, ushort, byte), List<string>>();
+    foreach (var action_ in Util.GetXlceEntries(battleData[16]))
+    {
+        var actionEntry = action_.Span;
+        var actionCategory = actionEntry[2];
+        if (actionCategory > 12) break;  // magics only
+        var mpCost = actionEntry[8];
+        for (var i = 0; i < 3; i++)
+        {
+            var actionSub = actionEntry[(42 + i * 26)..];
+            if (!(actionSub[0] == 1 && actionSub[8] == 3)) continue;
+
+            var attackTypeId = actionSub[9];
+            if (attackTypeId == 0) continue;
+            var actionAtk = BitConverter.ToUInt16(actionSub[10..]);
+            //var actionElementBonus = BitConverter.ToUInt16(actionSub[24..]);  // always 0
+            var nameId = BitConverter.ToUInt16(actionEntry[148..]);
+            string name = texts["EFFECTTEXT_LC_EFFECT"][nameId.ToString("d3")]["NAME"][langIndex];
+            var key = (attackTypeId, actionAtk, mpCost);
+            magicGroupMagics.TryAdd(key, new());
+            magicGroupMagics[key].Add(name);
+
+            break;
+        }
+    }
+    var magicGrouoNames = new Dictionary<(byte, ushort, byte), string>()
+    {
+        [(21, 25, 15)] = "投射Ⅰ", [(21, 60, 25)] = "投射Ⅱ", [(21, 90, 35)] = "投射Ⅲ", [(21, 120, 45)] = "投射Ⅳ",
+        [(23, 40, 25)] = "放射Ⅰ", [(23, 70, 45)] = "放射Ⅱ", [(23, 55, 50)] = "放射Ⅲ", [(23, 95, 70)] = "放射Ⅳ",
+        [(69, 100, 45)] = "召唤Ⅰ", [(69, 100, 70)] = "召唤Ⅱ",
+        [(23, 95, 60)] = "龙语Ⅰ", [(23, 120, 80)] = "龙语Ⅱ",
+        [(69, 70, 35)] = "忍术Ⅰ", [(69, 70, 50)] = "忍术Ⅱ",
+    };
+    var magicFactors = new List<Entry>();
+    foreach (var (key, magics) in magicGroupMagics)
+    {
+        var (attackTypeId, actionAtk, _) = key;
+        var offenseEntry = attackTypes[attackTypeId].Span;
+        var defenseEntry = attackTypes[attackTypeId + 1].Span;
+        magicGrouoNames.TryGetValue(key, out var group);
+        magicFactors.Add(new()
+        {
+            ["magics"] = magics,
+            ["group"] = group ?? "",
+            ["actionAtk"] = actionAtk * BitConverter.ToInt16(offenseEntry[10..]) / 100,
+            ["offenseEquipmentAtkFactor"] = $"{BitConverter.ToInt16(offenseEntry[0..]) / 100.0:f1}",  // always 0
+            ["defenseEquipmentDefFactor"] = $"{BitConverter.ToInt16(defenseEntry[2..]) / 100.0:f1}",  // always 0.5
+            ["offenseStatFactor"] = printStatFactors(offenseEntry),
+            ["defenseStatFactor"] = printStatFactors(defenseEntry), // always 0.7mnd+1.0res
+            ["defenseStepFactor"] = BitConverter.ToInt16(defenseEntry[70..]) / 100.0,
+            ["defenseInverseStepFactor"] = BitConverter.ToInt16(defenseEntry[72..]) / 100.0,
+            ["elementSelfToActionFactor"] = printSelfToActionElementFactors(offenseEntry),
+            ["elementSelfToTatgetFactor"] = printSelfToTargetElementFactors(offenseEntry),
+        });
+
+    }
+    File.WriteAllText(@"..\damage-factors.magic.yaml", Util.YamlSerializer.Serialize(magicFactors));
+
+    var finishingFactors = new List<Entry>();
+    var finishingDedup = new HashSet<object>();
+    foreach (var action_ in Util.GetXlceEntries(battleData[16]))
+    {
+        var actionEntry = action_.Span;
+        var actionCategory = actionEntry[2];
+        if (actionCategory < 13) continue;  // exclude magics
+
+        for (var i = 0; i < 3; i++)
+        {
+            var actionSub = actionEntry[(42 + i * 26)..];
+            if (!(actionSub[0] == 1 && actionSub[8] == 3)) continue;
+
+            var attackTypeId = actionSub[9];
+            if (attackTypeId == 0) continue;
+            var actionAtk = BitConverter.ToUInt16(actionSub[10..]);
+            var actionElementId = actionSub[19];
+            var actionElementBonus = BitConverter.ToUInt16(actionSub[24..]);
+            var nameId = BitConverter.ToUInt16(actionEntry[148..]);
+            string name = texts["EFFECTTEXT_LC_EFFECT"][nameId.ToString("d3")]["NAME"][langIndex];
+
+            var dedupKey = (nameId, attackTypeId, actionAtk, actionElementBonus);
+            if (finishingDedup.Contains(dedupKey)) continue;
+            finishingDedup.Add(dedupKey);
+
+            var offenseEntry = attackTypes[attackTypeId].Span;
+            var defenseEntry = attackTypes[attackTypeId + 1].Span;
+            finishingFactors.Add(new()
+            {
+                ["name"] = name,
+                ["actionCategory"] = actionCategory,
+                ["actionAtk"] = actionAtk * BitConverter.ToInt16(offenseEntry[10..]) / 100,
+                ["actionElement"] = actionElementBonus * BitConverter.ToInt16(offenseEntry[(202 + actionElementId * 2)..]) / 100,
+                ["offenseEquipmentAtkFactor"] = $"{BitConverter.ToInt16(offenseEntry[0..]) / 100.0:f1}",
+                ["defenseEquipmentDefFactor"] = $"{BitConverter.ToInt16(defenseEntry[2..]) / 100.0:f1}",
+                ["offenseStatFactor"] = printStatFactors(offenseEntry),
+                ["defenseStatFactor"] = printStatFactors(defenseEntry),
+                ["elementSelfToActionFactor"] = printSelfToActionElementFactors(offenseEntry),
+                ["elementSelfToTatgetFactor"] = printSelfToTargetElementFactors(offenseEntry),
+            });
+            break;
+        }
+    }
+    var finishingFactors_ = new List<Entry>();
+    var otherFactors = new List<Entry>();
+    foreach (var entry in finishingFactors)
+    {
+        var category = (byte)entry["actionCategory"];
+        (22 <= category && category <= 43 ? finishingFactors_ : otherFactors).Add(entry);
+    }
+    File.WriteAllText(@"..\damage-factors.finishing.yaml", Util.YamlSerializer.Serialize(finishingFactors_));
+    File.WriteAllText(@"..\damage-factors.other.yaml", Util.YamlSerializer.Serialize(otherFactors));
 }
