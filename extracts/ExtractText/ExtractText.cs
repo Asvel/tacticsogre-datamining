@@ -34,7 +34,7 @@ for (var langIndex = 0; langIndex < langs.Length; langIndex++)
                 .Replace("_NAME_FULL_OR_AGE", "_NAME-FULL-OR-AGE")
                 .Replace("_NAME_2LINES", "_NAME-2LINES");
             var value = readString();
-            if (value != "" && value != "nothing" && value != "Not Use" && value != "NOT USED" && value != "（断末魔）")
+            if (value != "" && value != "nothing" && value != "Not Use" && value != "NOT USED" && value != "（断末魔）" && !key.EndsWith("_LINECHECK"))
             {
                 var parts = key.Split('_');
                 var node = texts;
