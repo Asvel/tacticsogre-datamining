@@ -150,65 +150,82 @@ var equipmentTypeNameIds = new Dictionary<byte, string>
             foreach (var entry_ in Util.GetXlceEntries(entryunitData))
             {
                 var entry = entry_.Span;
-                var rawDrops = new List<(int, int, int)>();
-                for (var i = 0; i < 7; i++)
+                for (var deadOrEscaped = 0; deadOrEscaped <= 1; deadOrEscaped++)
                 {
-                    var dropData = entry.Slice(74 + i * 4, 4);
-                    if (dropData[2] == 0) continue;
-                    rawDrops.Add((BitConverter.ToUInt16(dropData), 1, dropData[2]));
-                }
-                for (var i = 0; i < 4; i++)
-                {
-                    var dropData = entry.Slice(118 + i * 4, 4);
-                    rawDrops.Add((BitConverter.ToUInt16(dropData), dropData[2], dropData[3]));
-                }
-
-                var unitDrops = new List<Entry>();
-                foreach (var (itemId, amount, rate) in rawDrops)
-                {
-                    if (itemId == 0) continue;
-                    if (ignoredItems.Contains(itemId)) continue;
-                    string itemName = itemId < 1000
-                        ? texts["ARMSTEXT_LC_ARMS"][equipmentNameIds[itemId].ToString("d3")]["NAME"][langIndex]
-                        : texts["COMMODITYTEXT_LC_COMMODITY"][(itemId - 1000).ToString("d3")]["NAME"][langIndex];
-                    if ((610 <= itemId && itemId <= 626) || itemName == "迦楼罗")  // cursed weapon and a translation glitch
+                    var rawDrops = new List<(int, int, int)>();
+                    if (deadOrEscaped == 0)
                     {
-                        itemName += $"（{texts["COMMAND_LC_COMMAND"]["NAME"][equipmentTypeNameIds[equipmentSkillIds[itemId]]]["NAME"][langIndex]}）";
+                        for (var i = 0; i < 7; i++)
+                        {
+                            var dropData = entry.Slice(74 + i * 4, 4);
+                            if (dropData[2] == 0) continue;
+                            rawDrops.Add((BitConverter.ToUInt16(dropData), 1, dropData[2]));
+                        }
+                        for (var i = 0; i < 4; i++)
+                        {
+                            var dropData = entry.Slice(118 + i * 4, 4);
+                            rawDrops.Add((BitConverter.ToUInt16(dropData), dropData[2], dropData[3]));
+                        }
                     }
-                    var dropRate = (int)Math.Round(rate / 255.0 * 100);
-                    unitDrops.Add(new()
+                    else
                     {
-                        //["itemId"] = itemId,
-                        ["item"] = itemName,
-                        ["amount"] = amount,
-                        ["rate"] = $"{dropRate}%",
-                    });
-                }
-
-                if (unitDrops.Count > 0)
-                {
-                    var nameId = BitConverter.ToUInt16(entry[0..]);
-                    if (nameId == 248) continue;  // CODA1 Sirene, not actually killed, won't drop
-                    var race = races[BitConverter.ToUInt16(entry[2..])].Span;
-                    var gender = race[3] == 0 ? "MALE" : "FEMALE";
-                    var raceName = "";
-                    var raceType = race[57];
-                    if (raceType != 0)
-                    {
-                        if (raceType == 1 && race[3] == 0) raceType = 0;
-                        raceName = texts["COMMAND_LC_COMMAND"]["NAME"][$"RACE{raceType:d2}"]["NAME"][langIndex];
+                        for (var i = 0; i < 4; i++)
+                        {
+                            var dropData = entry.Slice(178 + i * 4, 4);
+                            rawDrops.Add((BitConverter.ToUInt16(dropData), dropData[2], dropData[3]));
+                        }
                     }
-                    string name = nameId != 0 ? texts["UNITNAME0_LC_UNITNAME"][nameId.ToString("d4")]["TEXT"][langIndex] : "";
-                    string classjobName = texts["CLASS_TEXT_DATA"][$"CLASS{classjobNameIds[entry[6]]:d4}"][gender][langIndex];
-                    var position = $"{entry[10]},{entry[11]}";
-                    battlestageUnits.Add(new()
+                    var unitDrops = new List<Entry>();
+                    foreach (var (itemId, amount, rate) in rawDrops)
                     {
-                        ["name"] = name,
-                        ["race"] = raceName,
-                        ["class"] = classjobName,
-                        ["position"] = position,
-                        ["drops"] = unitDrops,
-                    });
+                        if (itemId == 0) continue;
+                        if (ignoredItems.Contains(itemId)) continue;
+                        string itemName = itemId < 1000
+                            ? texts["ARMSTEXT_LC_ARMS"][equipmentNameIds[itemId].ToString("d3")]["NAME"][langIndex]
+                            : texts["COMMODITYTEXT_LC_COMMODITY"][(itemId - 1000).ToString("d3")]["NAME"][langIndex];
+                        if ((610 <= itemId && itemId <= 626) || itemName == "迦楼罗")  // cursed weapon and a translation glitch
+                        {
+                            itemName += $"（{texts["COMMAND_LC_COMMAND"]["NAME"][equipmentTypeNameIds[equipmentSkillIds[itemId]]]["NAME"][langIndex]}）";
+                        }
+                        var dropRate = (int)Math.Round(rate / 255.0 * 100);
+                        unitDrops.Add(new()
+                        {
+                            //["itemId"] = itemId,
+                            ["item"] = itemName,
+                            ["amount"] = amount,
+                            ["rate"] = $"{dropRate}%",
+                        });
+                    }
+
+                    if (unitDrops.Count > 0)
+                    {
+                        var nameId = BitConverter.ToUInt16(entry[0..]);
+                        if (nameId == 248) continue;  // CODA1 Sirene, not actually killed, won't drop
+                        var race = races[BitConverter.ToUInt16(entry[2..])].Span;
+                        var gender = race[3] == 0 ? "MALE" : "FEMALE";
+                        var raceName = "";
+                        var raceType = race[57];
+                        if (raceType != 0)
+                        {
+                            if (raceType == 1 && race[3] == 0) raceType = 0;
+                            raceName = texts["COMMAND_LC_COMMAND"]["NAME"][$"RACE{raceType:d2}"]["NAME"][langIndex];
+                        }
+                        string name = nameId != 0 ? texts["UNITNAME0_LC_UNITNAME"][nameId.ToString("d4")]["TEXT"][langIndex] : "";
+                        string classjobName = texts["CLASS_TEXT_DATA"][$"CLASS{classjobNameIds[entry[6]]:d4}"][gender][langIndex];
+                        var position = $"{entry[10]},{entry[11]}";
+                        battlestageUnits.Add(new()
+                        {
+                            ["name"] = name,
+                            ["race"] = raceName,
+                            ["class"] = classjobName,
+                            ["position"] = position,
+                            ["drops"] = unitDrops,
+                        });
+                        if (deadOrEscaped == 1)
+                        {
+                            battlestageUnits.Last().Add("shiftstone", true);
+                        }
+                    }
                 }
             }
             if (battlestageUnits.Count > 0)
