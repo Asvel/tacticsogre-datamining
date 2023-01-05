@@ -179,6 +179,7 @@ var equipmentTypeNameIds = new Dictionary<byte, string>
                     foreach (var (itemId, amount, rate) in rawDrops)
                     {
                         if (itemId == 0) continue;
+                        if (rate == 0) continue;
                         if (ignoredItems.Contains(itemId)) continue;
                         string itemName = itemId < 1000
                             ? texts["ARMSTEXT_LC_ARMS"][equipmentNameIds[itemId].ToString("d3")]["NAME"][langIndex]
