@@ -42,7 +42,9 @@ struct XlceEntry_EntryUnit {
 	XlceEntry_EntryUnit_Equipment equipments[7];
 	XlceEntry_EntryUnit_Item items[4];
 	XlceEntry_EntryUnit_Drop drops[4];
-	padding[62];
+	padding[44];
+	XlceEntry_EntryUnit_Drop escapedDrops[4];
+	padding[2];
 };
 
 // it's impractical to infer the exact type just from data
