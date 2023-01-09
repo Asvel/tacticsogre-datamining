@@ -217,7 +217,7 @@ string formatInstruction(short type, BinaryReader reader)
         0x13 => $"ProtagonistClan = {r8():cl}",
         0x14 => $"ObtainItem({r16():it})",
         0x15 => $"BattleUnit[{r16():ch}]ActionStrategy = {r16()}",
-        0x16 => $"SuppressUnitRegularDeathScene({r16():ch})",
+        0x16 => $"PreventUnitDirectlyKilled({r16():ch})",
         0x17 => $"ChangeClearConditionMessage({r8()})",
         0x18 => $"Noop",
         0x19 => $"ChangeClearConditionUnit({r8():ch})",

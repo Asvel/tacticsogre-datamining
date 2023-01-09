@@ -23,7 +23,7 @@ enum IT : s16 {
 	/* 0x13 */ SetProtagonistClan,
 	/* 0x14 */ ObtainItem,
 	/* 0x15 */ SetBattleUnitActionStrategy,  // change enemy AI
-	/* 0x16 */ SuppressUnitRegularDeathScene,  // for using a specialized one during current battle
+	/* 0x16 */ PreventUnitDirectlyKilled,  // for using a screenplay progress to handle it
 	/* 0x17 */ ChangeClearConditionMessage,  // and schedule a UI promotion
 	/* 0x18 */ Noop18,
 	/* 0x19 */ ChangeClearConditionUnit,  // and schedule a UI promotion
